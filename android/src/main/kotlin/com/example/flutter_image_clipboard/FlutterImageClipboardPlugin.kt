@@ -16,8 +16,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import android.net.Uri
-import android.os.PersistableBundle
-import android.content.ClipDescription
 
 /** FlutterImageClipboardPlugin */
 class FlutterImageClipboardPlugin: FlutterPlugin, MethodCallHandler {
