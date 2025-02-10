@@ -16,6 +16,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import android.net.Uri
+import android.os.PersistableBundle
+import android.content.ClipDescription
 
 /** FlutterImageClipboardPlugin */
 class FlutterImageClipboardPlugin: FlutterPlugin, MethodCallHandler {
@@ -56,19 +58,27 @@ class FlutterImageClipboardPlugin: FlutterPlugin, MethodCallHandler {
         }
     }
 
-    private fun copyImageToClipboard(bitmap: Bitmap) {
-        val clipboard = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val uri = saveImageToCache(bitmap)
-        val clip = ClipData.newUri(applicationContext.contentResolver, "image", uri)
-        clipboard.setPrimaryClip(clip)
-    }
-
+ private fun copyImageToClipboard(bitmap: Bitmap) {
+    val clipboard = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val uri = saveImageToCache(bitmap)
+    
+    val mimeTypes = arrayOf( "image/webp.wasticker")
+    val item = ClipData.Item(uri)
+    
+    val clip = ClipData(
+        "Sticker", 
+        mimeTypes, 
+        item
+    )
+    
+    clipboard.setPrimaryClip(clip)
+}
     private fun saveImageToCache(bitmap: Bitmap): Uri {
         val cachePath = File(applicationContext.cacheDir, "images")
         cachePath.mkdirs()
-        val file = File(cachePath, "image.png")
+        val file = File(cachePath, "image.webp")
         val fos = FileOutputStream(file)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, fos)
         fos.close()
         return FileProvider.getUriForFile(applicationContext, "${applicationContext.packageName}.fileprovider", file)
     }
